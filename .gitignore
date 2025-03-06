@@ -1,0 +1,59 @@
+# Ignore Python virtual environment
+venv/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Ignore logs and system files
+logs/
+*.log
+.DS_Store
+Thumbs.db
+
+# Ignore IDE/editor settings
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Ignore environment variables and credentials
+.env
+*.env.local
+*.env.production
+secrets.json
+
+# Ignore Python dependencies installed via pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ignore build directories
+build/
+dist/
+*.egg-info/
+
+# Ignore frontend dependencies
+frontend/node_modules/
+frontend/.next/
+frontend/.vercel/
+frontend/.nuxt/
+frontend/.out/
+
+# Ignore temporary or generated files
+tmp/
+*.swp
+*.bak
+
+# Ignore database or cache files
+*.sqlite3
+*.db
+*.db-journal
+
+# Ignore compressed files
+*.zip
+*.tar.gz
+*.rar
+
+# Ignore Jupyter Notebook checkpoints (if applicable)
+.ipynb_checkpoints/
+
+backend/compressai/
