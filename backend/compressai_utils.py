@@ -5,7 +5,6 @@ from PIL import Image
 import numpy as np
 from torchvision import transforms
 from typing import Dict, Any
-import math
 
 def load_image(image_path: str) -> torch.Tensor:
   img = Image.open(image_path).convert('RGB')
