@@ -6,6 +6,9 @@ import numpy as np
 from torchvision import transforms
 from typing import Dict, Any
 
+_model_cache = {}
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 def load_image(image_path: str) -> torch.Tensor:
   img = Image.open(image_path).convert('RGB')
   transform = transforms.Compose([transforms.ToTensor()])
@@ -20,7 +23,10 @@ def compress_image(image_path: str, output_path: str, quality: int = 4) -> Dict[
 
   quality = max(1, min(8, quality))
 
-  model = cheng2020_anchor(quality=quality, pretrained=True).to(device).eval()
+  if quality in _model_cache:
+    _model_cache[quality] = cheng2020_anchor(quality=quality, pretrained=True).to(device).eval()
+
+  model = _model_cache[quality]
 
   x = load_image(image_path).to(device)
 
