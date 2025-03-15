@@ -5,14 +5,30 @@ from PIL import Image
 import numpy as np
 from torchvision import transforms
 from typing import Dict, Any
+import math
 
-_model_cache = {}
+model_cache = {}
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def load_image(image_path: str) -> torch.Tensor:
   img = Image.open(image_path).convert('RGB')
-  transform = transforms.Compose([transforms.ToTensor()])
-  return transform(img).unsqueeze(0)
+  
+  width, height = img.size
+
+  min_size = 64
+  if width < min_size or height < min_size:
+    new_width = max(min_size, width)
+    new_height = max(min_size, height)
+    image = img.resize((new_width, new_height), Image.LANCZOS)
+    width, height = new_width, new_height
+  
+  new_width = math.ceil(width / 64) * 64
+  new_height = math.ceil(height / 64) * 64
+  image = img.resize((new_width, new_height), Image.LANCZOS)
+
+  transform = transforms.ToTensor()
+  x = transform(img).unsqueeze(0)
+  return x
 
 def save_image(tensor: torch.Tensor, output_path: str) -> None:
   img = transforms.ToPILImage()(tensor.squeeze().clamp(0, 1))
@@ -23,10 +39,9 @@ def compress_image(image_path: str, output_path: str, quality: int = 4) -> Dict[
 
   quality = max(1, min(8, quality))
 
-  if quality in _model_cache:
-    _model_cache[quality] = cheng2020_anchor(quality=quality, pretrained=True).to(device).eval()
-
-  model = _model_cache[quality]
+  if quality not in model_cache:
+    model_cache[quality] = cheng2020_anchor(quality=quality, pretrained=True).to(device).eval()
+  model = model_cache[quality]
 
   x = load_image(image_path).to(device)
 
