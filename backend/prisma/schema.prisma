@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-py"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model CompressedImage {
+  id                 String   @id @default(uuid())
+  filename           String
+  compressedFilename String
+  quality            Int
+  bpp                Float
+  psnr               Float
+  ssim               Float
+  msSsim             Float
+  createdAt          DateTime @default(now())
+}
