@@ -2,6 +2,12 @@
 
 neucomp is an application that uses neural networks to compress images with better quality-to-size ratios than traditional compression methods like JPEG.
 
+
+![Screenshot 2025-03-23 180503](https://github.com/user-attachments/assets/713b52c6-4a9b-40f1-98f9-0ab24c961c54)
+![Screenshot 2025-03-23 180516](https://github.com/user-attachments/assets/b1be75b6-2a2d-4675-991a-d98f9401864f)
+
+
+
 ## features
 
 - neural network-based image compression using CompressAI
