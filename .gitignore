@@ -56,4 +56,7 @@ tmp/
 # Ignore Jupyter Notebook checkpoints (if applicable)
 .ipynb_checkpoints/
 
+# Ignore uploads directory with user images
+backend/uploads/
+
 backend/compressai/
