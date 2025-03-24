@@ -23,42 +23,54 @@ export interface CompressionResult {
   error?: string;
 }
 
-export const compressImage = async (imageFile: File, quality: number): Promise<CompressionResult> => {
+function getApiUrl(): string {
+  if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+    return window.location.origin;
+  }
+  
+  return 'http://localhost:8000';
+}
+
+export async function compressImage(file: File, quality: number): Promise<CompressionResult> {
   const formData = new FormData();
-  formData.append('file', imageFile);
+  formData.append('file', file);
   formData.append('quality', quality.toString());
 
+  const apiUrl = getApiUrl();
+  
   try {
-    console.log(`Sending compression request to ${API_URL}/compress with quality ${quality}`);
-    const response = await axios.post<CompressionResult>(
-      `${API_URL}/compress`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
-    
-    console.log('Compression response:', response.data);
-    
-    if (response.data.error && !response.data.compressed_image) {
-      throw new Error(response.data.error);
+    const response = await fetch(`${apiUrl}/api/compress`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
+
+    const data = await response.json();
+    validateCompressionResult(data);
     
-    if (!response.data.compressed_image) {
-      throw new Error('No compressed image path in server response');
-    }
-    
-    return response.data;
+    return {
+      ...data,
+      original_image: `${apiUrl}/${data.original_image}`,
+      compressed_image: `${apiUrl}/${data.compressed_image}`,
+    };
   } catch (error) {
-    console.error('Compression API error:', error);
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error || 'Failed to compress image');
-    }
-    throw new Error(error instanceof Error ? error.message : 'Failed to compress image');
+    console.error('Error compressing image:', error);
+    throw error;
   }
-};
+}
+
+function validateCompressionResult(data: any) {
+  if (data.error && !data.compressed_image) {
+    throw new Error(data.error);
+  }
+  
+  if (!data.compressed_image) {
+    throw new Error('No compressed image path in server response');
+  }
+}
 
 export const getImageUrl = (path: string): string => {
   if (!path) {

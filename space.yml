@@ -1,0 +1,7 @@
+title: NeuComp - Neural Image Compression
+emoji: 🖼️
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: true
